@@ -1,4 +1,3 @@
-/*
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -36,4 +35,4 @@ public class ListTest {
     @Test
     public void contains() {
     }
-}*/
+}
