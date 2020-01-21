@@ -12,7 +12,7 @@ abstract class List<E> {
     abstract boolean contains (E elem);
 }
 
-abstract class EmptyL<E> extends List<E> {
+class EmptyL<E> extends List<E> {
     public EmptyL() {
 
     }
@@ -31,9 +31,18 @@ abstract class EmptyL<E> extends List<E> {
     E get(int index) throws EmptyListException {
         throw new EmptyListException();
     }
+    int length() {
+        return 0;
+    }
+    List<E> append(List<E> other) {
+        return null;
+    }
+    boolean contains(E element) {
+        return false;
+    }
 }
 
-abstract class NodeL<E> extends List<E> {
+class NodeL<E> extends List<E> {
     public E value;
     public List<E> next;
 
@@ -60,15 +69,30 @@ abstract class NodeL<E> extends List<E> {
         else
             return next.get(index - 1);
     }
-    /*int length() {
-        int length = 1;
-        List<E> current = this;
-        do {
-            current = current.getRest();
-            length++;
-        } while (!current.isSingleton());
-        return length;
-    }*/
+    int length() {
+        /*if (next == null)
+            return 1;
+        else
+            return 1 + next.length();*/
+        return 1 + (next == null ? 0 : next.length());
+    }
+    List<E> append(List<E> other) {
+        if (next == null) {
+            next = other;
+            return this;
+        }
+        else {
+            return next.append(other);
+        }
+    }
+    boolean contains(E element) {
+        /*if (value.equals(element))
+            return true;
+        else
+            return next.contains(element);*/
+        /*return value.equals(element) ? true : next.contains(element);*/
+        return value.equals(element) || next.contains(element);
+    }
 }
 class Test {
     public static void main(String[] args) {
