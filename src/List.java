@@ -10,6 +10,7 @@ abstract class List<E> {
     abstract int length ();
     abstract List<E> append (List<E> other);
     abstract boolean contains (E elem);
+    abstract boolean equalTo(List<E> other) throws EmptyListException;
 }
 
 class EmptyL<E> extends List<E> {
@@ -28,8 +29,8 @@ class EmptyL<E> extends List<E> {
     List<E> getRest() throws EmptyListException {
         throw new EmptyListException();
     }
-    E get(int index) throws EmptyListException {
-        throw new EmptyListException();
+    E get(int index) {
+        throw new IndexOutOfBoundsException();
     }
     int length() {
         return 0;
@@ -39,6 +40,12 @@ class EmptyL<E> extends List<E> {
     }
     boolean contains(E element) {
         return false;
+    }
+    public String toString() {
+        return "--end";
+    }
+    boolean equalTo(List<E> other){
+        return other instanceof EmptyL;
     }
 }
 
@@ -52,10 +59,10 @@ class NodeL<E> extends List<E> {
     }
 
     boolean isEmpty() {
-        return value == null && next == null;
+        return false;
     }
     boolean isSingleton() {
-        return value != null && next == null;
+        return (next instanceof EmptyL);
     }
     E getFirst() {
         return value;
@@ -63,21 +70,17 @@ class NodeL<E> extends List<E> {
     List<E> getRest() {
         return next;
     }
-    E get(int index) throws EmptyListException{
+    E get(int index) throws EmptyListException {
         if (index == 0)
             return value;
         else
             return next.get(index - 1);
     }
     int length() {
-        /*if (next == null)
-            return 1;
-        else
-            return 1 + next.length();*/
-        return 1 + (next == null ? 0 : next.length());
+        return 1 + (next instanceof EmptyL ? 0 : next.length());
     }
     List<E> append(List<E> other) {
-        if (next == null) {
+        if (next instanceof EmptyL) {
             next = other;
             return this;
         }
@@ -86,17 +89,18 @@ class NodeL<E> extends List<E> {
         }
     }
     boolean contains(E element) {
-        /*if (value.equals(element))
-            return true;
-        else
-            return next.contains(element);*/
-        /*return value.equals(element) ? true : next.contains(element);*/
         return value.equals(element) || next.contains(element);
     }
-}
-class Test {
-    public static void main(String[] args) {
-
+    public String toString() {
+        return value + " " + next;
+    }
+    boolean equalTo(List<E> other) throws EmptyListException {
+        if (!value.equals(other.getFirst())) {
+            System.out.println(value + " does not equal " + other.getFirst());
+            return false;
+        }
+        else
+            return next.equalTo(other.getRest());
     }
 }
 
